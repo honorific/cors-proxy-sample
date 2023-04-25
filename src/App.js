@@ -1,25 +1,42 @@
-import logo from './logo.svg';
-import './App.css';
+import {useEffect, useState} from 'react'
 
 function App() {
+  const [price, setPrice] = useState(-1)
+  const [priceTime, setPriceTime] = useState(null)
+  const proxyUrl = 'https://cors-anywhere.herokuapp.com/'
+  const stonkUrl = `${proxyUrl}https://query1.finance.yahoo.com/v8/finance/chart/GME`
+
+  const getStonk = async () => {
+    const response = await fetch(stonkUrl)
+    return response.json()
+  }
+  useEffect(() => {
+    let timeId
+    const getLatestPrice = async () => {
+      const data = await getStonk()
+      console.log(data)
+      const gme = data.chart.result[0]
+      console.log(gme)
+      setPrice(gme.meta.regularMarketPrice.toFixed(2))
+      setPriceTime(new Date(gme.meta.regularMarketTime * 1000))
+      timeId = setTimeout(getLatestPrice, 5000)
+    }
+
+    timeId = setTimeout(getLatestPrice, 5000)
+    //getLatestPrice()
+
+    return () => {
+      clearTimeout(timeId)
+    }
+  }, [])
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+    <div className='price'>
+      {price}
+      <br />
+      {priceTime?.toLocaleTimeString()}
     </div>
-  );
+  )
 }
 
-export default App;
+export default App
