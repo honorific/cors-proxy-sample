@@ -1,25 +1,17 @@
-import logo from './logo.svg';
-import './App.css';
+import {useEffect} from 'react'
 
 function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+  const proxyUrl = 'https://cors-anywhere.herokuapp.com/'
+  const stonkUrl = `${proxyUrl}https://query1.finance.yahoo.com/v8/finance/chart/GME`
+  const getStonk = async () => {
+    const response = await fetch(stonkUrl)
+    return response.json()
+  }
+  useEffect(() => {
+    getStonk().then((data) => console.log(data))
+  }, [])
+
+  return <div>hello world</div>
 }
 
-export default App;
+export default App
